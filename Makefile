@@ -1,5 +1,5 @@
 base=/scratch/gopinatr
-nix_pre=$(base)/nix-pre
+nix_pre=$(base)/nix-prefix
 nix_boot_usr=$(nix_pre)/usr
 NIXPKGS=$(nix_pre)/nixpkgs
 
@@ -175,6 +175,7 @@ build/.pkgcheckout:
 	rm -rf $(NIXPKGS)
 	git clone git@github.com:NixOS/nixpkgs.git $(NIXPKGS)
 	cat etc/non-nix.patch | (cd $(NIXPKGS) && patch -p1 )
+	mkdir -p build/
 	touch $@
 
 nixcheckout: build/.pkgcheckout
@@ -202,6 +203,10 @@ clobber:
 
 link:
 	ln -s etc/Makefile.nix Makefile
+
+channel:
+	rm -rf $(HOME)/.nix-defexpr/*
+	cd $(HOME)/.nix-defexpr/; ln -s $(NIXPKGS) .
 
 nix: build/.nixpkgs build/.nixconfig
 	@echo done $^
