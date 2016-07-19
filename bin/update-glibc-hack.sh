@@ -15,7 +15,7 @@ nix-env -i sssd -f $NIXPKGS
 
 nixdir=$(nix-build $NIXPKGS -A glibc.out)/lib
 chmod 777 $nixdir
-libnss=$(find /scratch/gopinatr/nix -name libnss_sss.so.\* | grep sssd)
+libnss=$(find ../nix -name libnss_sss.so.\* | grep sssd)
 echo $libnss
 cp -f $libnss $nixdir/
 chmod 555 $nixdir
