@@ -163,6 +163,8 @@ build/.nixpkgs: $(addprefix build/,$(addsuffix .x/.build,$(src)))
 	touch $@
 
 nixconfig: build/.nixconfig
+	mkdir -p ~/.nix-defexpr/
+	cd ~/.nix-defexpr/; ln -s $(NIXPKGS) .
 	echo done $^
 
 ~/.nix-profile:
