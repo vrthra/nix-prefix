@@ -37,7 +37,7 @@ stdenv.mkDerivation rec {
 
   # Customizable development shell setup with at last SSL certs set
   shellHook = ''
-    export PS1="$SHLVL\[\e[33m\]|\[\e[m\] "
+    export PS1="$SHLVL\[\e[33m\]nix*> \[\e[m\] "
     export R_LIBS=~/.R/library/
     TERM=xterm
   '';
