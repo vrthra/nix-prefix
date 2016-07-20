@@ -2,8 +2,8 @@ pkgs:
 {
   packageOverrides = self: {
     nixUnstable = self.nixUnstable.override {
-      storeDir = "/scratch/gopinatr/nix/store";
-      stateDir = "/scratch/gopinatr/nix/var";
+      storeDir = "BASE/nix/store";
+      stateDir = "BASE/nix/var";
     };
   };
   allowUnfree = true;
