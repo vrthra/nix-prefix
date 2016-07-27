@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
-./bin/check-nss.py
+python=$(nix-build -A python $NIXPKGS)/bin/python
+$python ./bin/check-nss.py
 nixdir=$(nix-build $NIXPKGS -A glibc.out)/lib
 chmod 777 $nixdir
 #libnss=$(find ../nix -name libnss_sss.so.\* | grep sssd)
@@ -8,4 +9,4 @@ chmod 777 $nixdir
 #cp -f $libnss $nixdir/
 rm $nixdir/libnss_sss.so.*
 chmod 555 $nixdir
-./bin/check-nss.py
+$python ./bin/check-nss.py

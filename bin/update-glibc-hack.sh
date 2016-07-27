@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
-./bin/check-nss.py
+python=$(nix-build -A python $NIXPKGS)/bin/python
+$python ./bin/check-nss.py
 (cd nixpkgs/
 git fetch origin pull/14697/head:sssd
 git cherry-pick \
@@ -19,4 +20,4 @@ libnss=$(find ../nix -name libnss_sss.so.\* | grep sssd)
 echo $libnss
 cp -f $libnss $nixdir/
 chmod 555 $nixdir
-./bin/check-nss.py
+$python ./bin/check-nss.py
