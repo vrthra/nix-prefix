@@ -3,6 +3,7 @@ python=$(nix-build -A python $NIXPKGS)/bin/python
 $python ./bin/check-nss.py
 set -e
 (cd nixpkgs/
+git reset --hard remotes/origin/master
 git fetch origin pull/14697/head:sssd
 git cherry-pick \
   1f4f0e71f39ab2e10602c2e70e45065b8475f8de \
