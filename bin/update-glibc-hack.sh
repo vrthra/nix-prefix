@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-set -e
 python=$(nix-build -A python $NIXPKGS)/bin/python
 $python ./bin/check-nss.py
+set -e
 (cd nixpkgs/
 git fetch origin pull/14697/head:sssd
 git cherry-pick \
