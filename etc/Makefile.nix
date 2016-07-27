@@ -147,22 +147,21 @@ build/nix.x/.build: build/nix.x/.extracted $(addprefix build/,$(addsuffix .x/.bu
 build: $(addprefix build/,$(addsuffix .x/.build,$(src)))
 	@echo done $@
 
-~/.nixpkgs/config.nix:
-	mkdir -p ~/.nixpkgs
-	cp etc/config.nix ~/.nixpkgs
-
-build/.nixconfig: $(addprefix build/,$(addsuffix .x/.build,$(src))) build/.nixpkgs ~/.nixpkgs/config.nix
+build/.nix: $(addprefix build/,$(addsuffix .x/.build,$(src))) build/.nixpkgs.co ~/.nixpkgs/config.nix
 	env LD_LIBRARY_PATH="$(nix_boot_usr)/lib:$(nix_boot_usr)/lib64" \
 		$(nix_boot_usr)/bin/nix-env -iA nixUnstable -f $(NIXPKGS)
 	touch $@
 
-build/.nixpkgs: $(addprefix build/,$(addsuffix .x/.build,$(src)))
+build/.nixpkgs.co: $(addprefix build/,$(addsuffix .x/.build,$(src))) build/.nixpkgs
+	touch $@
+
+build/.nixpkgs:
 	rm -rf $(NIXPKGS)
 	git clone git@github.com:NixOS/nixpkgs.git $(NIXPKGS)
 	cat etc/non-nix.patch | (cd $(NIXPKGS) && patch -p1 )
 	touch $@
 
-nixconfig: build/.nixconfig
+nixpkgs: build/.nixpkgs
 	mkdir -p ~/.nix-defexpr/
 	cd ~/.nix-defexpr/; ln -s $(NIXPKGS) .
 	echo done $^
@@ -173,6 +172,14 @@ nixconfig: build/.nixconfig
 nixprofile:
 	rm -rf ~/.nix-profile
 	ln -s $(nix_root)/var/nix/profiles/default ~/.nix-profile
+
+~/.nixpkgs/config.nix:
+	mkdir -p ~/.nixpkgs
+	cat etc/config.nix | sed -e 's#BASE#$(base)#g' >  ~/.nixpkgs/config.nix
+
+nixconfig:
+	mkdir -p ~/.nixpkgs
+	cat etc/config.nix | sed -e 's#BASE#$(base)#g' >  ~/.nixpkgs/config.nix
 
 static: ; mkdir -p $@
 
@@ -187,6 +194,6 @@ clobber:
 link:
 	ln -s etc/Makefile.nix Makefile
 
-nix: build/.nixpkgs build/.nixconfig
+nix: build/.nixpkgs.co build/.nix
 	@echo done $^
 
